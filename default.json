@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:best-practices", "schedule:weekly"],
+  "extends": ["config:best-practices", "schedule:weekly", "customManagers:githubActionsVersions"],
   "timezone": "Asia/Singapore",
   "description": [
     "Renovate automerges only after every check on the pull request passes. platformAutomerge stays false because GitHub's native automerge waits only for the checks main requires, and most of these repositories require none.",

@@ -20,4 +20,7 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: lts/*
-      - run: npx --yes --package renovate@44.155.1 -- renovate-config-validator --strict --no-global default.json .github/renovate.json
+      - run: npx --yes --package "renovate@$RENOVATE_VERSION" -- renovate-config-validator --strict --no-global default.json .github/renovate.json
+        env:
+          # renovate: datasource=npm depName=renovate
+          RENOVATE_VERSION: 44.155.1
