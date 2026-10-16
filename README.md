@@ -17,8 +17,10 @@ Presets are read from the default branch, so a change here reaches every reposit
 
 ## Agent skill
 
-[`skills/renovate`](skills/renovate/SKILL.md) is the policy behind the preset, written so an agent can apply it to any Renovate configuration, on GitHub or GitLab. It covers grouping, automerge, release ages, schedules, and how to verify a change with Renovate's own rule engine. Install it with the [GitHub CLI](https://cli.github.com/manual/gh_skill_install):
+[`skills/renovate`](skills/renovate/SKILL.md) is the policy behind the preset, written so an agent can apply it to any Renovate configuration, on GitHub or GitLab. It covers grouping, automerge, release ages, schedules, and how to verify a change with Renovate's own rule engine. Nothing needs installing: an Entwining repository's `AGENTS.md` tells an agent to read it before changing that repository's Renovate configuration, with the [GitHub CLI](https://cli.github.com/):
 
 ```sh
-gh skill install Entwining/renovate-config renovate
+gh repo read-file skills/renovate/SKILL.md -R Entwining/renovate-config
 ```
+
+To make it available in every repository instead, install it with `gh skill install Entwining/renovate-config renovate`.
