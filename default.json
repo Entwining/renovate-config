@@ -55,8 +55,13 @@
       "minimumReleaseAge": "7 days"
     },
     {
-      "description": "These datasources return no release timestamp (Docker only for Docker Hub), and a release without one would never pass the age; Docker Hub images still wait.",
-      "matchDatasources": ["docker", "github-runners", "git-tags", "git-refs"],
+      "description": "GitHub runner labels, Git tags, and Git refs never carry a release timestamp, so no age can apply to them. Removing the age, rather than allowing a missing timestamp, also keeps Renovate from reporting every such release as a repository problem.",
+      "matchDatasources": ["github-runners", "git-tags", "git-refs"],
+      "minimumReleaseAge": null
+    },
+    {
+      "description": "Docker registries other than Docker Hub return no release timestamp, and a release without one would never pass the age; Docker Hub images still wait.",
+      "matchDatasources": ["docker"],
       "minimumReleaseAgeBehaviour": "timestamp-optional"
     },
     {
