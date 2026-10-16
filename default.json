@@ -1,0 +1,73 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:best-practices", "schedule:weekly"],
+  "timezone": "Asia/Singapore",
+  "description": [
+    "Renovate automerges only after every check on the pull request passes. platformAutomerge stays false because GitHub's native automerge waits only for the checks main requires, and most of these repositories require none.",
+    "Major updates are not automerged; a repository lists a dependency whose major it may automerge, with the check that exercises it."
+  ],
+  "platformAutomerge": false,
+  "lockFileMaintenance": { "automerge": true },
+  "packageRules": [
+    {
+      "description": "Non-major updates rarely need changes of their own, so they share one pull request instead of opening one each; pin and digest updates join it because config:best-practices pins actions and Docker images to digests.",
+      "matchUpdateTypes": ["minor", "patch", "pin", "pinDigest", "digest"],
+      "groupName": "Routine dependencies",
+      "automerge": true
+    },
+    {
+      "description": "The versioning can still mark a minor or patch update breaking, as npm does for any 0.x or prerelease update and Cargo for a 0.x minor. It leaves the routine group, which it would stop from automerging; a group of its own below takes it back and waits for review with it.",
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchIsBreaking": true,
+      "groupName": null,
+      "automerge": false
+    },
+    {
+      "description": "A 0.x crate's compatible patch and breaking minor share one update bucket, so a pending breaking minor would hide the patch; separated, 0.x patches get a second routine pull request on a patch- branch. This must not match on update type, because the bucket is chosen before the update type exists. The pattern skips a leading = or ^, which the requirement carries when no lockfile records the version.",
+      "matchManagers": ["cargo"],
+      "matchCurrentVersion": "/^\\D*0\\./",
+      "separateMinorPatch": true
+    },
+    {
+      "description": "Lint and format releases change what the checks report, so their fix commits land in one pull request.",
+      "extends": ["packages:linters"],
+      "matchPackageNames": ["oxfmt"],
+      "groupName": "Linters"
+    },
+    {
+      "description": "TypeScript minor releases can add type errors.",
+      "matchPackageNames": ["typescript"],
+      "groupName": "TypeScript"
+    },
+    {
+      "description": "setup-bun installs the packageManager Bun version, so a Bun update changes the runtime the checks use; @types/bun follows Bun's version numbers.",
+      "matchPackageNames": ["bun", "@types/bun"],
+      "groupName": "Bun"
+    },
+    {
+      "description": "Each Pi release pins its other @earendil-works packages to the same version.",
+      "matchPackageNames": ["@earendil-works/**"],
+      "groupName": "Pi"
+    },
+    {
+      "description": "Wait a week before proposing a release, so a compromised or yanked version can be reported first. A rule rather than a top-level setting, so it overrides the three-day npm rule config:best-practices adds.",
+      "matchPackageNames": ["*"],
+      "minimumReleaseAge": "7 days"
+    },
+    {
+      "description": "These datasources return no release timestamp (Docker only for Docker Hub), and a release without one would never pass the age; Docker Hub images still wait.",
+      "matchDatasources": ["docker", "github-runners", "git-tags", "git-refs"],
+      "minimumReleaseAgeBehaviour": "timestamp-optional"
+    },
+    {
+      "description": "Coding agents release almost daily, and a day still covers most pulled releases. An installer or check with its own release-age window must also exempt these packages, as npm's --min-release-age-exclude does, or it rejects the pin.",
+      "matchPackageNames": ["@anthropic-ai/claude-code", "@earendil-works/**"],
+      "minimumReleaseAge": "1 day"
+    },
+    {
+      "description": "These update types have no release timestamp to check, so the age rules above would hold them forever; it is the list Renovate's security:minimumReleaseAge presets reset, and it must stay after every rule that sets an age.",
+      "matchUpdateTypes": ["lockFileMaintenance", "replacement", "pin", "bump", "lockfileUpdate", "rollback"],
+      "minimumReleaseAge": null
+    }
+  ]
+}

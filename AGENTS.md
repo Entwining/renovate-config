@@ -1,0 +1,3 @@
+Every push to `main` changes how Renovate treats every Entwining repository that extends this preset, on that repository's next run; there is no release or tag. Before changing [`default.json`](default.json) or [the skill](skills/renovate/SKILL.md), read the skill, which owns the policy and its reasons. Before pushing a change to `default.json`, run the skill's comparison script for each repository whose Renovate configuration extends this preset, and explain every changed treatment.
+
+The [Check workflow](.github/workflows/check.yml) validates the preset and this repository's own configuration with `renovate-config-validator --strict --no-global`.

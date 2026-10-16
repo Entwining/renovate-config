@@ -1,0 +1,14 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["local>Entwining/renovate-config"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "The check pins the Renovate release that validates the preset in an npx argument, which no built-in manager reads.",
+      "managerFilePatterns": ["/^\\.github/workflows/check\\.yml$/"],
+      "matchStrings": ["--package renovate@(?<currentValue>\\S+)"],
+      "depNameTemplate": "renovate",
+      "datasourceTemplate": "npm"
+    }
+  ]
+}
