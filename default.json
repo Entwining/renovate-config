@@ -16,7 +16,7 @@
       "automerge": true
     },
     {
-      "description": "The versioning can still mark a minor or patch update breaking, as npm does for any 0.x or prerelease update and Cargo for a 0.x minor. It leaves the routine group, which it would stop from automerging; a group of its own below takes it back and waits for review with it.",
+      "description": "The versioning can still mark a minor or patch update breaking, as npm does for any 0.x or prerelease update and Cargo for a 0.x minor. It leaves the routine group, which it would stop from automerging; a group of its own below takes it back and waits for review with it. TODO: until renovatebot/renovate#47102 is released, Renovate's GitHub Actions versioning marks no update breaking, so an action's 0.x minor still joins the routine group; remove this note once it is.",
       "matchUpdateTypes": ["minor", "patch"],
       "matchIsBreaking": true,
       "groupName": null,
