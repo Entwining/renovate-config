@@ -23,8 +23,8 @@
       "automerge": false
     },
     {
-      "description": "A 0.x crate's compatible patch and breaking minor share one update bucket, so a pending breaking minor would hide the patch; separated, 0.x patches get a second routine pull request on a patch- branch. This must not match on update type, because the bucket is chosen before the update type exists. The pattern skips a leading = or ^, which the requirement carries when no lockfile records the version.",
-      "matchManagers": ["cargo"],
+      "description": "A 0.x crate's compatible patch and breaking minor share one update bucket, so a pending breaking minor would hide the patch; separated, 0.x patches get a second routine pull request on a patch- branch. This must not match on update type, because the bucket is chosen before the update type exists, and it matches the crate datasource so that crates pinned outside Cargo.toml, such as CI tools, are covered too. The pattern skips a leading = or ^, which the requirement carries when no lockfile records the version.",
+      "matchDatasources": ["crate"],
       "matchCurrentVersion": "/^\\D*0\\./",
       "separateMinorPatch": true
     },
