@@ -1,8 +1,22 @@
 # renovate-config
 
-Shared [Renovate](https://docs.renovatebot.com/) configuration for Entwining repositories, and the agent skill that explains how to extend it.
+Shared [Renovate](https://docs.renovatebot.com/) configuration for Entwining repositories. An agent skill explains how to extend the preset on GitHub or GitLab.
+
+## Group dependency updates
+
+The [preset](default.json) groups routine updates into pull requests that merge after all checks pass. Linters, TypeScript, Bun, and Pi have their own groups. Major and other breaking updates wait for review.
+
+Compatible 0.x crate patches use a separate update bucket. A pending breaking minor does not hide them. GitHub Actions updates are not yet classified as breaking by Renovate.
+
+## Wait before updating
+
+Renovate proposes updates weekly by default. New releases normally wait seven days. Claude Code and Pi releases wait one day.
+
+The [release-age rules](default.json) handle sources and update types without release timestamps. Repositories can override the schedule and add their own groups.
 
 ## Use the preset
+
+Add the preset to your repository's Renovate configuration:
 
 ```json
 {
@@ -11,16 +25,10 @@ Shared [Renovate](https://docs.renovatebot.com/) configuration for Entwining rep
 }
 ```
 
-The [preset](default.json) gives every repository the same baseline; each rule's description says why it exists. Non-major updates share one pull request that merges once checks pass, except for linters, TypeScript, Bun, and Pi, which each get their own; majors and other breaking updates wait for review. It also waits a week before proposing a release, a day for coding agents, and runs weekly. A tool version that a workflow pins outside a built-in manager's reach goes in a `*_VERSION` variable under a `# renovate: datasource=<datasource> depName=<name>` comment, which Renovate's [`customManagers:githubActionsVersions`](https://docs.renovatebot.com/presets-customManagers/#custommanagersgithubactionsversions) preset updates. A repository adds only what is specific to it: a daily schedule (`"schedule:daily"` after the preset in `extends`), its own groups, and the breaking updates its checks let it merge automatically. Because of this repository's name, Renovate's [onboarding](https://docs.renovatebot.com/config-presets/#grouporganization-level-presets) suggests the preset to new repositories in the organization, as `local>Entwining/renovate-config`, which resolves to the same file.
-
-Presets are read from the default branch, so a change here reaches every repository that extends it on its next Renovate run.
+Changes to this preset reach consumers on their next Renovate run. The [configuration guide](docs/usage.md) covers repository overrides and workflow tool pins.
 
 ## Agent skill
 
-[`skills/renovate`](skills/renovate/SKILL.md) is the policy behind the preset, written so an agent can apply it to any Renovate configuration, on GitHub or GitLab. It covers grouping, automerge, release ages, schedules, and how to verify a change with Renovate's own rule engine. Nothing needs installing: an Entwining repository's `AGENTS.md` tells an agent to read it before changing that repository's Renovate configuration, with the [GitHub CLI](https://cli.github.com/):
+The [Renovate skill](skills/renovate/SKILL.md) explains the grouping and automerge policy. It also covers release ages, schedules, and verification with Renovate's rule engine.
 
-```sh
-gh repo read-file skills/renovate/SKILL.md -R Entwining/renovate-config
-```
-
-To make it available in every repository instead, install it with `gh skill install Entwining/renovate-config renovate`.
+Entwining repositories point agents to the skill from `AGENTS.md`. Nothing needs installing. The [skill access instructions](docs/usage.md#agent-skill) also support repositories outside Entwining.
